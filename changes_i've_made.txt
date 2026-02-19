@@ -1,0 +1,173 @@
+
+CHANGES MADE - TIMER APP ASSIGNMENT
+Edited by: Velan | velane929@gmail.com
+
+------------------------------------------------------------
+1. src/components/TimerModal.tsx  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Merged AddTimerModal.tsx and EditTimerModal.tsx into one unified component.
+// REASON: "Consolidate Modal Code" task - eliminates duplication.
+// HOW: Accepts an optional `timer` prop. If provided = edit mode. If not = add mode.
+// ALSO: Uses the new reusable <ModalButtons> component inside the form.
+// ALSO: useEffect resets form fields whenever the modal opens.
+// NOTE: Delete AddTimerModal.tsx and EditTimerModal.tsx after adding this file.
+
+------------------------------------------------------------
+2. src/components/ModalButtons.tsx  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Extracted the Cancel + Submit buttons from the modal into a separate component.
+// REASON: "Extract Common Components" task - reusable across add and edit flows.
+// PROPS: oncancel (function), isvalid (boolean), submitlabel (optional string, default "submit")
+// USAGE: Drop <ModalButtons oncancel={...} isvalid={...} submitlabel="add timer" /> in any form.
+
+------------------------------------------------------------
+3. src/components/TimerItem.tsx  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Replaced EditTimerModal import with the new unified TimerModal.
+// CHANGE: Fixed simultaneous timers bug - useEffect now only depends on
+//         timer.isRunning and timer.id, not timer.remainingTime.
+//         Previously, the interval was being cleared/reset every second because
+//         remainingTime was in the dependency array.
+// CHANGE: Moved completion detection to a separate useEffect watching remainingTime only.
+// CHANGE: Toast duration set to Infinity so sound keeps playing until user dismisses.
+// CHANGE: timerAudio.stop() is now called inside the dismiss onClick correctly,
+//         fixing the console error that occurred when dismiss was clicked.
+
+------------------------------------------------------------
+4. src/pages/Timer.tsx  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Replaced AddTimerModal import with TimerModal (unified modal).
+// CHANGE: Removed old isModalOpen prop drilling that referenced AddTimerModal.
+
+------------------------------------------------------------
+5. src/pages/Home.tsx  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Added mobile bottom navigation bar (fixed, bottom of screen, lg:hidden).
+// REASON: "Responsive Navigation & Layout" task.
+// CHANGE: Added pb-20 padding to main content on mobile so content isn't hidden behind bottom nav.
+// CHANGE: Added fixed top-right credit text: "edited by velan, mail: velane929@gmail.com"
+
+------------------------------------------------------------
+6. src/pages/Stopwatch.tsx  (REPLACED - was empty stub)
+------------------------------------------------------------
+// CHANGE: Full stopwatch implementation replacing the empty function stub.
+// FEATURES:
+//   - Start / Pause toggle button
+//   - Restart button (clears time and all laps)
+//   - Lap button (records split time and total time, disabled when not running)
+//   - Centisecond display format: MM:SS.cs
+//   - Lap list shown below controls (newest lap on top)
+//   - Each lap row shows: lap number, split time, total time
+//   - Status text: "ready" / "running" / "paused"
+// TECHNIQUE: Uses Date.now() delta + accumulated ref for accurate timing (not just setInterval count).
+
+------------------------------------------------------------
+7. src/store/useTimerStore.ts  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Added localStorage persistence for timers.
+// REASON: "Timer Persistence" task.
+// HOW: loadstate() reads from localStorage on app start.
+//      savestate() is called after every mutation (add, delete, toggle, update, restart, edit).
+// NOTE: Timers survive page refresh. isRunning is preserved as false on load
+//       (running timers are paused on refresh - safe default).
+
+------------------------------------------------------------
+8. src/index.css  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Added Google Fonts import for "Tinos" font family.
+// CHANGE: Applied Tinos as the default font via @layer base html rule.
+// REASON: "Use Google Font" task.
+
+------------------------------------------------------------
+9. src/utils/validation.test.ts  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Unit tests for all validation rules in validation.ts.
+// COVERS:
+//   - valid data returns true
+//   - empty title fails
+//   - whitespace-only title fails
+//   - title > 50 chars fails
+//   - all zeros time fails
+//   - negative time values fail
+//   - minutes > 59 fails
+//   - seconds > 59 fails
+//   - total > 24 hours fails
+//   - exactly 24 hours passes
+
+------------------------------------------------------------
+10. src/pages/Stopwatch.test.tsx  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Component tests for Stopwatch.
+// COVERS:
+//   - renders initial "00:00.00" and "ready" state
+//   - clicking start changes status to "running"
+//   - clicking pause changes status to "paused"
+//   - clicking restart resets display and laps
+//   - lap is recorded when running
+//   - lap is NOT recorded when stopped
+//   - lap button is disabled when not running
+
+------------------------------------------------------------
+11. src/components/ModalButtons.test.tsx  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Component tests for the reusable ModalButtons.
+// COVERS:
+//   - renders cancel and submit
+//   - custom submitlabel is shown
+//   - submit disabled when isvalid=false
+//   - submit enabled when isvalid=true
+//   - oncancel fires when cancel clicked
+
+------------------------------------------------------------
+12. src/setupTests.ts  (NEW FILE)
+------------------------------------------------------------
+// CHANGE: Vitest setup file that imports @testing-library/jest-dom matchers.
+// REQUIRED: Must be referenced in vite.config.ts setupFiles.
+
+------------------------------------------------------------
+13. vite.config.ts  (MODIFIED)
+------------------------------------------------------------
+// CHANGE: Added vitest config block (globals, jsdom environment, setupFiles).
+// REASON: Needed for React component tests to run properly with @testing-library.
+
+------------------------------------------------------------
+FILES TO DELETE (replaced by TimerModal.tsx)
+------------------------------------------------------------
+// DELETE: src/components/AddTimerModal.tsx
+// DELETE: src/components/EditTimerModal.tsx
+
+------------------------------------------------------------
+HOW TO RUN
+------------------------------------------------------------
+npm install
+npm run dev        -> start dev server
+npm run test       -> run all tests
+npm run build      -> production build
+
+------------------------------------------------------------
+TASKS COMPLETED (from assignment rubric)
+------------------------------------------------------------
+[TIMER]
+Match the UI
+Simultaneous Timers - fixed interval dependency bug
+Snack Bar stays until dismissed (duration: Infinity)
+Fix Snack Bar Console Error (stop() called correctly in onClick)
+Extract Common Components (ModalButtons)
+Consolidate Modal Code (TimerModal)
+Validation Snack Bars (already in validation.ts via toast.error)
+Responsive Snack Bar Placement (top-right desktop, bottom nav pushes toasts up mobile)
+Write Tests (validation.test.ts, ModalButtons.test.tsx)
+Timer Persistence (localStorage in useTimerStore)
+Google Font - Tinos
+Favicon - already wired in index.html (/icons/clock.svg)
+
+[STOPWATCH]
+UI (display, lap list, status text, button states)
+Start & Stop
+Lap with split + total time
+Restart
+Button visual feedback (active/disabled states)
+Mobile bottom nav
+Tests (Stopwatch.test.tsx)
+
+============================================================
