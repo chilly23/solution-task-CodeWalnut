@@ -1,4 +1,4 @@
-# timer app — submission guide
+# timer app - submission guide
 
 ---
 
@@ -59,77 +59,52 @@ vite.config.ts              ← already has test config
 
 ### `src/store/usetimerstore.ts`
 **changes:**
-- added `loadstate()` — reads timers from localstorage on startup
-- added `savestate()` — called after every mutation to persist timers
-- fixed `updatetimer` — each timer ticks independently (simultaneous timers now work)
-- all action names lowercase
+added `loadstate()` - reads timers from localstorage on startup, added `savestate()` - called after every mutation to persist timers, fixed `updatetimer` - each timer ticks independently (simultaneous timers now work), all action names lowercase
 
 ---
 
 ### `src/utils/time.ts`
-**changes:**
-- `formattime()` — same as before (renamed lowercase)
-- added `formatstopwatch()` — shows `mm:ss.mmm` format for stopwatch
+**changes:** `formattime()` - same as before (renamed lowercase), added `formatstopwatch()` - shows `mm:ss.mmm` format for stopwatch
 
 ---
 
-### `src/utils/validation.ts`
-- same logic, renamed to lowercase, toast messages lowercased
+### `src/utils/validation.ts` 
+same logic, renamed to lowercase, toast messages lowercased
 
 ---
 
 ### `src/utils/audio.ts`
-**changes:**
-- added looping: sound keeps playing until `stop()` is called
-- this makes the snackbar dismiss button actually stop the sound
-- fixed the console error on dismiss (was calling `.stop()` on already-stopped oscillator)
+**changes:** added looping: sound keeps playing until `stop()` is called, this makes the snackbar dismiss button actually stop the sound, fixed the console error on dismiss (was calling `.stop()` on already-stopped oscillator)
 
 ---
 
 ### `src/components/modalbuttons.tsx` ← NEW
-- extracted cancel + submit buttons into reusable component
-- takes `onclose`, `isvalid`, `submitlabel` as props
-- used in `timermodal.tsx`
+extracted cancel + submit buttons into reusable component, takes `onclose`, `isvalid`, `submitlabel` as props, used in `timermodal.tsx`
 
 ---
 
 ### `src/components/timermodal.tsx` ← NEW (replaces add + edit modals)
-- single modal that handles both add and edit
-- if `timer` prop is passed → edit mode; if not → add mode
-- uses `modalbuttons` component
-- always runs `validatetimerform` on submit and shows toast errors
+single modal that handles both add and edit, if `timer` prop is passed → edit mode; if not → add mode, uses `modalbuttons` component, always runs `validatetimerform` on submit and shows toast errors
 
 ---
 
 ### `src/components/timeritem.tsx`
-**changes:**
-- interval is now per-timer (simultaneous timers work)
-- toast `duration: infinity` — stays until dismissed
-- `onDismiss` and `onAutoClose` callbacks both call `audio.stop()`
-- fixed console error: audio cleanup is safe now
+**changes:** interval is now per-timer (simultaneous timers work), toast `duration: infinity` - stays until dismissed, `onDismiss` and `onAutoClose` callbacks both call `audio.stop()`, fixed console error: audio cleanup is safe now
 
 ---
 
 ### `src/pages/stopwatch.tsx` ← was empty, now full implementation
-- uses `requestanimationframe` for accurate timing
-- start, stop, resume, lap, reset
-- shows lap list with individual lap time + total time
-- lap button disabled when not running
+uses `requestanimationframe` for accurate timing, start, stop, resume, lap, reset shows lap list with individual lap time + total time, lap button disabled when not running
 
 ---
 
 ### `src/pages/home.tsx`
-**changes:**
-- desktop: sidebar navigation (already existed)
-- mobile: bottom navigation bar (new)
-- snackbar position: `top-right` on desktop, `bottom-center` on mobile
+**changes:** desktop: sidebar navigation (already existed), mobile: bottom navigation bar (new), snackbar position: `top-right` on desktop, `bottom-center` on mobile
 
 ---
 
 ### `src/index.css`
-**changes:**
-- added google font `Tinos` via `@import`
-- applied to all elements via `* { font-family: 'Tinos', serif; }`
+**changes:** added google font `Tinos` via `@import`, applied to all elements via `* { font-family: 'Tinos', serif; }`
 
 ---
 
@@ -155,17 +130,3 @@ vite.config.ts              ← already has test config
 (they are replaced by `timermodal.tsx`)
 
 ---
-
-## quick checklist before submitting
-
-- [ ] `npm run dev` works
-- [ ] can add multiple timers and run them at the same time
-- [ ] timer sound loops until snackbar is dismissed
-- [ ] no console errors on snackbar dismiss
-- [ ] timers persist after page refresh
-- [ ] google font "tinos" visible
-- [ ] favicon shows in browser tab
-- [ ] mobile has bottom nav bar
-- [ ] snackbar is bottom-center on mobile, top-right on desktop
-- [ ] stopwatch: start, stop, lap, reset all work
-- [ ] `npm test` passes
